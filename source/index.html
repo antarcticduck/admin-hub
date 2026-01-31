@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2021-2026 Stuart Garner -->
+<!-- Licensed under the MIT License: https://github.com/antarcticduck/admin-hub/blob/main/LICENSE -->
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en-AU'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='description' content='Admin Hub is a lightweight, fully customisable, frontend-only website that&apos;s designed to serve as a dashboard for system administrators.'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <link rel='icon' type='image/x-icon' href='images/favicon.ico'>
+        <link rel='stylesheet' href='styles/main.css?v2026.04'>
+        <title>Admin Hub</title>
+    </head>
+    <body>
+        <div class='body-container'>
+            <div class='header'>
+            </div>
+            <div class='sidebar'>
+                <div class='sidebar__content-container'>
+                    <div class='sidebar__hyperlink-group-container'>
+                    </div>
+                    <div class='sidebar__footer-controls-container'>
+                        <button id='aboutButton' onclick='aboutButton_ClickEvent()'>
+                            About
+                        </button>
+                        <a id='helpHyperlink' href='https://stuartgarner.au/admin-hub/help/' rel='noopener noreferrer' target='_blank'>
+                            Help
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class='content'>
+                <div class='content__header-container'>
+                    <div class='content__header-container-effect'>
+                    </div>
+                    <div class='content__header-left-container'>
+                        <div class='content__sidebar-expander-container content__button-container' data-tooltip='Sidebar'>
+                            <button class='content__sidebar-expander-button' onclick="contentSidebarButton_ClickEvent()" tabindex='1'>
+                                <img src='images/sidebar.svg' alt='Sidebar'>
+                            </button>
+                        </div>
+                        <div class='content__status-container'>
+                            <div class='tag tag--indicator tag--yellow' id='contentStatusIndicator'>
+                            </div>
+                            <div class='content__status-text'>
+                                Updating data, please wait...
+                            </div>
+                        </div>
+                    </div>
+                    <div class='content__search-container'>
+                        <div class='content__input-container'>
+                            <input id='contentSearchInput' type='text' placeholder='' aria-label='Search'>
+                            <div class='content__search-placeholder'>
+                                Search
+                            </div>
+                            <div class='content__search-image'>
+                            </div>
+                            <div class='content__search-close-button-container content__button-container content__button-container--hidden' data-tooltip='Close search'>
+                                <button class='content__search-close-button' onclick="contentSearchCloseButton_ClickEvent()">
+                                </button>
+                            </div>
+                        </div>
+                        <div class='content__search-caption-text'>
+                        </div>
+                    </div>
+                    <div class='content__header-right-container'>
+                        <div class='content__button-group' id='contentToggleButtonGroup'>
+                            <div class='content__theme-toggle-container content__button-container' data-tooltip='Toggle dark/light mode'>
+                                <button class='content__theme-toggle-button' onclick="contentThemeToggleButton_ClickEvent()">
+                                    <img src='images/dark-mode.svg' alt='Theme'>
+                                </button>
+                            </div>
+                            <div class='content__view-toggle-container content__button-container' data-tooltip='Toggle dashboard/list view'>
+                                <button class='content__view-toggle-button' onclick="contentViewToggleButton_ClickEvent()">
+                                    <img src='images/list-view.svg' alt='View'>
+                                </button>
+                            </div>
+                        </div>
+                        <div class='content__button-group'>
+                            <div class='content__rss-feed-container content__button-container' data-tooltip='RSS feed'>
+                                <button class='content__rss-feed-button' onclick="contentRssFeedButton_ClickEvent()">
+                                    <img src='images/rss.svg' alt='RSS'>
+                                </button>
+                                <div class='popup rss-feed-popup'>
+                                    <div class='popup__item-container-wrapper'>
+                                        <div class='popup__item-container rss-feed-popup__item-container'>
+                                        </div>
+                                    </div>
+                                    <div class='popup__item-container-effect'></div>
+                                </div>
+                            </div>
+                            <div class='content__accessibility-container content__button-container' data-tooltip='Accessibility'>
+                                <button class='content__accessibility-button' onclick="contentAccessibilityButton_ClickEvent()">
+                                    <img src='images/accessibility.svg' alt='Accessibility'>
+                                </button>
+                                <div class='popup accessibility-popup'>
+                                    <div class='popup__item-container-wrapper'>
+                                        <div class='popup__item-container settings-popup__item-container'>
+                                            <div class='settings-popup__group-container'>
+                                                <div class='settings-popup__title-text'>
+                                                    Accessibility
+                                                </div>
+                                                <label class='settings-popup__checkbox'>
+                                                    Outline key elements
+                                                    <input id='settingsPopupAccessibilityBordersCheckbox' type='checkbox' onchange="settingsPopupAccessibilityBordersCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <label class='settings-popup__checkbox'>
+                                                    Reduce transparency
+                                                    <input id='settingsPopupAccessibilityNoTransparencyCheckbox' type='checkbox' onchange="settingsPopupAccessibilityNoTransparencyCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='popup__item-container-effect'>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='content__settings-container content__button-container' data-tooltip='Settings'>
+                                <button class='content__settings-button' onclick="contentSettingsButton_ClickEvent()">
+                                    <img src='images/settings.svg' alt='Settings'>
+                                </button>
+                                <div class='popup settings-popup'>
+                                    <div class='popup__item-container-wrapper'>
+                                        <div class='popup__item-container settings-popup__item-container'>
+                                            <div class='settings-popup__group-container'>
+                                                <div class='settings-popup__title-text'>
+                                                    Sidebar & Controls
+                                                </div>
+                                                <label class='settings-popup__checkbox'>
+                                                    Pin sidebar
+                                                    <input id='settingsPopupPinSidebarCheckbox' type='checkbox' onchange="settingsPopupPinSidebarCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <label class='settings-popup__checkbox'>
+                                                    Show dark mode toggle
+                                                    <input id='settingsPopupShowThemeToggleCheckbox' type='checkbox' onchange="settingsPopupShowThemeToggleCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <label class='settings-popup__checkbox'>
+                                                    Show view toggle
+                                                    <input id='settingsPopupShowViewToggleCheckbox' type='checkbox' onchange="settingsPopupShowViewToggleCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <label class='settings-popup__checkbox'>
+                                                    Show RSS feed
+                                                    <input id='settingsPopupShowRssFeedCheckbox' type='checkbox' onchange="settingsPopupShowRssFeedCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <label class='settings-popup__checkbox'>
+                                                    Show clock
+                                                    <input id='settingsPopupShowClockCheckbox' type='checkbox' onchange="settingsPopupShowClockCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                            </div>
+                                            <div class='settings-popup__group-container' id='dashboardSettingsPopupGroupContainer'>
+                                                <div class='settings-popup__separator'>
+                                                </div>
+                                                <div class='settings-popup__title-text'>
+                                                    Dashboard
+                                                </div>
+                                                <label class='settings-popup__checkbox'>
+                                                    Show statistics
+                                                    <input id='settingsPopupShowStatisticsCheckbox' type='checkbox' onchange="settingsPopupShowStatisticsCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                                <div class='settings-popup__radio-button-container-title-text'>
+                                                    Sort site by:
+                                                </div>
+                                                <div class='settings-popup__radio-button-container'>
+                                                    <label class='settings-popup__radio-button'>
+                                                        <input id='settingsPopupSortByIDRadioButton' type='radio' name='sortByRadioButtons' onclick="sortTiles('data-siteid')">
+                                                        <div class='settings-popup__radio-button-content'>
+                                                            <div class='settings-popup__radio-button-text'>
+                                                                ID
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                    <label class='settings-popup__radio-button'>
+                                                        <input id='settingsPopupSortByNameRadioButton' type='radio' name='sortByRadioButtons' onclick="sortTiles('data-sitename')">
+                                                        <div class='settings-popup__radio-button-content'>
+                                                            <div class='settings-popup__radio-button-text'>
+                                                                Name
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                    <label class='settings-popup__radio-button'>
+                                                        <input id='settingsPopupSortByStatusRadioButton' type='radio' name='sortByRadioButtons' onclick="sortTiles('data-sitestatus')">
+                                                        <div class='settings-popup__radio-button-content'>
+                                                            <div class='settings-popup__radio-button-text'>
+                                                                Status
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class='settings-popup__group-container'>
+                                                <div class='settings-popup__separator'>
+                                                </div>
+                                                <div class='settings-popup__title-text'>
+                                                    Data
+                                                </div>
+                                                <label class='settings-popup__checkbox'>
+                                                    Automatically update data
+                                                    <input id='settingsPopupAutomaticallyUpdateDataCheckbox' type='checkbox' onchange="settingsPopupAutomaticallyUpdateDataCheckbox_ChangeEvent()">
+                                                    <span class='settings-popup__checkbox-tick'></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='popup__item-container-effect'>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='content__clock-container content__button-container' data-tooltip='Clocks'>
+                                <button class='content__clock-button' onclick="contentClockButton_ClickEvent()">
+                                    <div class='content__clock-button-time-text'></div>
+                                    <div class='content__clock-button-date-text'></div>
+                                </button>
+                                <div class='popup clock-popup'>
+                                    <div class='popup__item-container-wrapper'>
+                                        <div class='popup__item-container clock-popup__item-container'>
+                                        </div>
+                                    </div>
+                                    <div class='popup__item-container-effect'>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='dashboard-view-container'>
+                    <div id='dashboardViewGroupContainerStatistics' class='dashboard-view__group-container'>
+                    </div>
+                    <div id='dashboardViewGroupContainerPinned' class='dashboard-view__group-container'>
+                        <div class='dashboard-view__group-title-text'>
+                            <span>My Pins</span>
+                        </div>
+                        <div id='dashboardViewTileContainerPinned' class='dashboard-view__tile-container'>
+                        </div>
+                    </div>
+                </div>
+                <table class='list-view-table'>
+                    <colgroup>
+                    </colgroup>
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class='body-container__search-overlay'>
+            </div>
+            <div class='body-container__modal-overlay'>
+            </div>
+            <dialog class='about-dialog'>
+                <div class='about-dialog__content-container'>
+                    <div class='about-dialog__button-container about-dialog__close-button-container' data-tooltip='Close about popup'>
+                        <button class='about-dialog__close-button' onclick='aboutDialogCloseButton_ClickEvent(this)'>
+                        </button>
+                    </div>
+                    <div class="about-dialog__title-text">
+                        Admin Hub v2026.04
+                    </div>
+                    <div class="about-dialog__body-text">
+                        Admin Hub is a lightweight, fully customisable, frontend-only website that&apos;s designed to serve as a dashboard for system administrators.
+                    </div>
+                    <div class="about-dialog__footer-text">
+                        <p>Source code hosted on <a href='https://github.com/antarcticduck/admin-hub' rel='noopener noreferrer' target='_blank'>GitHub</a></p>
+                        <p>Copyright &copy; 2021-2026 Stuart Garner<br>Licensed under the <a href='https://stuartgarner.au/admin-hub/license/' rel='noopener noreferrer' target='_blank'>MIT License</a></p>
+                        <p>Uicons by <a href='https://www.flaticon.com/uicons' rel='noopener noreferrer' target='_blank'>Flaticon</a></p>
+                    </div>
+                </div>
+            </dialog>
+        </div>
+        <template id='additionalDetailsButtonTemplate'>
+            <button class='tile__show-details-button' data-tooltip='Show site data' onclick="tileShowDetailsButton_ClickEvent(this)">
+                <img src='images/details.svg' alt='Details'>
+            </button>
+        </template>
+        <template id='clockPopupItemTemplate'>
+            <div class='clock-popup__item'>
+                <div class='clock-popup__item-title-container'>
+                    <div class='clock-popup__item-title-text'>
+                    </div>
+                    <div class='clock-popup__item-subtitle-text'>
+                    </div>
+                </div>
+                <div class='clock-popup__item-time-text'>
+                </div>
+            </div>
+        </template>
+        <template id='detailsDialogTemplate'>
+            <dialog class='details-dialog'>
+                <div class='details-dialog__content-container'>
+                    <div class='details-dialog__header-container'>
+                        <div class='details-dialog__button-container details-dialog__close-button-container' data-tooltip='Close site data'>
+                            <button class='details-dialog__close-button' onclick='detailsDialogCloseButton_ClickEvent(this)'>
+                            </button>
+                        </div>
+                        <div class='details-dialog__search-container'>
+                            <input name='detailsDialogSearchInput' type='text' placeholder='Search site data' aria-label='Search'>
+                            <div class='details-dialog__search-image'>
+                            </div>
+                            <div class='details-dialog__button-container details-dialog__search-close-button-container' data-tooltip='Close search'>
+                                <button class='details-dialog__search-close-button' onclick='detailsDialogSearchCloseButton_ClickEvent(this)'></button>
+                            </div>
+                        </div>
+                        <button class='details-dialog__expand-all-button' onclick='detailsDialogExpandAllButton_ClickEvent(this)'>
+                        </button>
+                    </div>
+                    <div class='details-dialog__image-wrapper'>
+                    </div>
+                    <div class='details-dialog__title-text'>
+                    </div>
+                    <div class='details-dialog__search-placeholder-text'>
+                        There's nothing here that matches your search :(
+                    </div>
+                    <div class='details-dialog__placeholder-text'>
+                        No site details are available.
+                    </div>
+                </div>
+            </dialog>
+        </template>
+        <template id='detailsDialogDisclosureTemplate'>
+            <details>
+                <summary>
+                </summary>
+                <table>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="details-dialog__caption-text">
+                </div>
+            </details>
+        </template>
+        <template id='hyperlinkPopupTemplate'>
+            <button class='hyperlink-popup-button' data-tooltip='Show more hyperlinks' aria-label='Show more hyperlinks' onclick="showHyperlinkPopupButton_ClickEvent(this)">
+            </button>
+            <div class='hyperlink-popup'>
+                <div class='hyperlink-popup__content-container'>
+                </div>
+            </div>
+        </template>
+        <template id='pinButtonTemplate'>
+            <button class='tile__pin-button' data-tooltip='Pin site' onclick="pinButton_ClickEvent(this)">
+                <img src='images/pin.svg' alt='Pin'>
+            </button>
+        </template>
+        <template id='rssFeedPopupItemTemplate'>
+            <a class='rss-feed-popup__item' tabindex='0'>
+                <div class='rss-feed-popup__item-image-wrapper'>
+                    <img src='images/rss.svg' alt='?'>
+                </div>
+                <div class='rss-feed-popup__item-text-container'>
+                    <div class='rss-feed-popup__item-title-text'>
+                    </div>
+                    <div class='rss-feed-popup__item-subtitle-text'>
+                    </div>
+                    <div class='rss-feed-popup__item-body-text'>
+                    </div>
+                </div>
+            </a>
+        </template>
+        <template id='siteTileTemplate'>
+            <div class='tile'>
+                <div class='tile__content-container'>
+                    <div class='tile__header-container'>
+                        <div class='tile__id-text'>
+                        </div>
+                    </div>
+                    <div class='tile__body-container'>
+                        <div class='tile__text-container'>
+                            <div class='tile__title-text'>
+                            </div>
+                            <div class='tile__subtitle-text'>
+                            </div>
+                        </div>
+                        <div class='tile__status-container'>
+                        </div>
+                    </div>
+                </div>
+                <div class='tile__image-container'>
+                </div>
+                <div class='tile__controls-container'>
+                </div>
+            </div>
+        </template>
+        <template id='statisticTileTemplate'>
+            <div class='statistic-tile'>
+                <div class='statistic-tile__top-row-container'>
+                    <div class='statistic-tile__image-wrapper'>
+                    </div>
+                    <div class='statistic-tile__value-text'>
+                    </div>
+                </div>
+                <div class='statistic-tile__title-text'>
+                </div>
+            </div>
+        </template>
+        <template id='tileContainerTemplate'>
+            <div class="dashboard-view__tile-container">
+            </div>
+        </template>
+        <template id='tileGroupTemplate'>
+            <div class='dashboard-view__group-container dashboard-view__group-container--live-data'>
+                <div class='dashboard-view__group-title-text'>
+                </div>
+            </div>
+        </template>
+        <template id='tileSubgroupTemplate'>
+            <div class='dashboard-view__subgroup-container'>
+                <div class="dashboard-view__subgroup-title-text">
+                </div>
+            </div>
+        </template>
+        <script type='text/javascript' src='scripts/main.js?v2026.04'></script>
+    </body>
+</html>
