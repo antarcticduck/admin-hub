@@ -10,7 +10,7 @@ Admin Hub only needs a few megabytes of space on a web server to run (e.g. on an
 
 * [Setup guide](https://stuartgarner.au/admin-hub/setup/)
 * [User guide](https://stuartgarner.au/admin-hub/help/)
-* [Live demo](https://stuartgarner.au/admin-hub/demo/)
+* [Live demo](https://stuartgarner.au/admin-hub-demo/)
 
 ## FAQs
 
