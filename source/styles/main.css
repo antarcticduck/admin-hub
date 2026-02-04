@@ -601,7 +601,7 @@ body {
     top: -36px;
 }
 
-.content--list-view > .content__header-container:has(+ .list-view-table) > .content__header-container-effect {
+.content--list-view > .content__header-container > .content__header-container-effect {
     bottom: -46px;
     visibility: hidden;
 }
