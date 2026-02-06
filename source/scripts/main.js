@@ -158,7 +158,7 @@ function getListViewColumnVisibilityWidths() {
 }
 
 // Function to pin a tile to the 'My Pins' tile container.
-function pinTile(siteID, isOnWindowLoad = false) {
+function pinTile(siteID, isOnFetchLiveData = false) {
 
     const tileToPin = document.querySelector(`.tile[data-siteid="${siteID}"]`);
     if (tileToPin === null || tileToPin.classList.contains('tile--pinned')) {
@@ -169,7 +169,7 @@ function pinTile(siteID, isOnWindowLoad = false) {
     tileToPin.classList.add('tile--pinned');
     tileToPin.querySelector('.tile__pin-button').setAttribute('data-tooltip', 'Unpin site');
 
-    if (!isOnWindowLoad) {
+    if (!isOnFetchLiveData) {
         content.scrollTo({ top: 0, behavior: 'smooth' });
         sortTiles(isLocalStorageAccessible ? window.localStorage.getItem('SortBy') : 'data-siteid');
         setTileContainerResponsiveUI();
