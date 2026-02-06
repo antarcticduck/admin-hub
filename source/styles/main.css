@@ -66,15 +66,15 @@
 
     13 - Tooltips
 
-    14 - Screen size handling
-        14.1 - Container queries
-        14.2 - Media queries
+    14 - Container queries
 
-    15 - Animations
+    15 - Media queries
 
-    16 - Global overrides
-        16.1 - Image dark mode handling
-        16.2 - Superellipse support
+    16 - Animations
+
+    17 - Global overrides
+        17.1 - Image dark mode handling
+        17.2 - Superellipse support
 
 */
 
@@ -891,34 +891,6 @@ body {
     display: block;
 }
 
-/* 5.1.9 - Clock */
-
-.content__button-container > .content__clock-button {
-    padding: 0 16px;
-}
-
-.content__button-group > .content__button-container > .content__clock-button {
-    padding: 0 8px;
-}
-
-.content__button-group > .content__button-container:nth-last-child(1 of :not(.content__button-container--hidden)) > .content__clock-button {
-    padding-right: 16px;
-}
-
-.content__button-group > .content__button-container:nth-child(1 of :not(.content__button-container--hidden)) > .content__clock-button {
-    padding-left: 16px;
-}
-
-.content__clock-button-time-text {
-    font-size: 14px;
-}
-
-.content__clock-button-date-text {
-    color: var(--secondary-text-colour);
-    font-size: 13px;
-    margin-top: 2px;
-}
-
 /* 5.1.5 - RSS feed */
 
 /* 5.1.5.1 - RSS feed popup */
@@ -1246,6 +1218,34 @@ body {
 .settings-popup__radio-button:hover > .settings-popup__radio-button-content > .settings-popup__radio-button-text,
 .settings-popup__radio-button > input:checked + .settings-popup__radio-button-content > .settings-popup__radio-button-text  {
     color: var(--text-colour, hsl(0 0% 5%));
+}
+
+/* 5.1.9 - Clock */
+
+.content__button-container > .content__clock-button {
+    padding: 0 16px;
+}
+
+.content__button-group > .content__button-container > .content__clock-button {
+    padding: 0 8px;
+}
+
+.content__button-group > .content__button-container:nth-last-child(1 of :not(.content__button-container--hidden)) > .content__clock-button {
+    padding-right: 16px;
+}
+
+.content__button-group > .content__button-container:nth-child(1 of :not(.content__button-container--hidden)) > .content__clock-button {
+    padding-left: 16px;
+}
+
+.content__clock-button-time-text {
+    font-size: 14px;
+}
+
+.content__clock-button-date-text {
+    color: var(--secondary-text-colour);
+    font-size: 13px;
+    margin-top: 2px;
 }
 
 /* 5.1.9.1 - Clock popup */
@@ -2742,9 +2742,7 @@ div.tag[data-tooltip],
 
 
 
-/* 14 - Screen size handling */
-
-/* 14.1 - Container queries */
+/* 14 - Container queries */
 
 @container content-container scroll-state(scrollable: top) {
 
@@ -2770,7 +2768,9 @@ div.tag[data-tooltip],
 
 }
 
-/* 14.2 - Media queries */
+
+
+/* 15 - Media queries */
 
 @media (1412px <= width < 1460px),
        (1064px <= width < 1112px),
@@ -2987,7 +2987,7 @@ div.tag[data-tooltip],
 
 
 
-/* 15 - Animations */
+/* 16 - Animations */
 
 @keyframes scroll-fade-out {
     0% { opacity: 1; }
@@ -2996,9 +2996,9 @@ div.tag[data-tooltip],
 
 
 
-/* 16 - Global overrides */
+/* 17 - Global overrides */
 
-/* 16.1 - Image dark mode handling */
+/* 17.1 - Image dark mode handling */
 
 .image--allow-brightness-control:not(.image--drop-shadow) {
     filter: var(--image-filter-brightness-control, brightness(5%));
@@ -3020,7 +3020,7 @@ div.tag[data-tooltip],
     filter: var(--image-filter-shadow, drop-shadow(0 0 4px hsl(0 0% 0% / 50%)));
 }
 
-/* 16.2 - Superellipse support */
+/* 17.2 - Superellipse support */
 
 @supports (corner-shape: superellipse(1.2)) and selector(::-webkit-scrollbar) {
 
