@@ -666,13 +666,11 @@ body {
 .content__button-container > button > img {
     filter: var(--image-filter-brightness-control, brightness(5%));
     height: 50%;
-    left: 50%;
-    margin: 0;
+    inset: 0;
+    margin: auto;
     -o-object-fit: contain;
     object-fit: contain;
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
     -webkit-user-drag: none;
     -webkit-user-select: none;
     user-select: none;
@@ -690,16 +688,16 @@ body {
     background: var(--close-button-colour, hsl(0 100% 30%));
     content: '';
     height: 24px;
-    left: 50%;
+    inset: 0;
+    margin: auto;
     opacity: 0;
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
+    transform: rotate(45deg);
     width: 3px;
 }
 
 .content__button-container > button::before {
-    transform: translate(-50%, -50%) rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 .content__button-container--show-popup > .popup {
@@ -1741,13 +1739,11 @@ body {
 .tile__controls-container > button > img {
     filter: var(--image-filter-brightness-control, brightness(5%));
     height: 70%;
-    left: 50%;
-    margin: 0;
+    inset: 0;
+    margin: auto;
     -o-object-fit: contain;
     object-fit: contain;
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
     -webkit-user-drag: none;
     -webkit-user-select: none;
     user-select: none;
@@ -2042,13 +2038,11 @@ body {
 .list-view-table__cell-controls-container > a > img,
 .list-view-table__cell-controls-container > button > img {
     height: 50%;
-    left: 50%;
-    margin: 0;
+    inset: 0;
+    margin: auto;
     -o-object-fit: contain;
     object-fit: contain;
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
     -webkit-user-drag: none;
     -webkit-user-select: none;
     user-select: none;
@@ -2311,17 +2305,17 @@ a.tag:focus-visible {
     background: var(--close-button-colour, hsl(0 100% 30%));
     content: '';
     height: 18px;
-    left: 50%;
+    inset: 0;
+    margin: auto;
     position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
+    transform: rotate(45deg);
     width: 2px;
 }
 
 .about-dialog__close-button::before,
 .details-dialog__close-button::before,
 .details-dialog__search-close-button::before {
-    transform: translate(-50%, -50%) rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 .about-dialog__close-button:hover,
@@ -2342,11 +2336,10 @@ a.tag:focus-visible {
 /* 12.2 - About dialog */
 
 .about-dialog {
-    left: 50%;
-    max-width: 334px;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: max-content;
+    height: min-content;
+    inset: 0;
+    margin: auto;
+    width: 334px;
 }
 
 .about-dialog[open] {
@@ -2361,6 +2354,7 @@ a.tag:focus-visible {
 }
 
 .about-dialog__content-container {
+    height: min-content;
     padding: 12px 16px;
 }
 
@@ -2636,110 +2630,117 @@ a.tag:focus-visible {
 
 /* 13 - Tooltips */
 
-div.tag[data-tooltip],
-.statistic-tile[data-tooltip],
-.tile__status-item[data-tooltip] {
-    cursor: help;
-}
+@supports ((anchor-name: --tooltip-parent) and (position-anchor: --tooltip-parent) and (position-area: center)) {
 
-[data-tooltip]::after {
-    backdrop-filter: var(--l1-overlay-background-filter, blur(6px));
-    -webkit-backdrop-filter: blur(6px);
-    background-color: var(--l1-background-colour, hsl(247 10% 95%));
-    border: var(--l1-border, 1px solid hsl(247 10% 100%));
-    border-radius: 8px;
-    box-shadow: var(--l1-tooltip-box-shadow, 0 0 12px 0 hsl(0 0% 0% / 40%));
-    color: var(--secondary-text-colour, hsl(0 0% 30%));
-    content: attr(data-tooltip);
-    display: none;
-    font-size: 13px;
-    font-weight: normal;
-    opacity: 0;
-    padding: 4px 8px;
-    pointer-events: none;
-    position: absolute;
-    text-shadow: none;
-    transition-behavior: allow-discrete;
-    transition-duration: 200ms;
-    transition-property: display, opacity;
-    z-index: 6000;
-}
+    div.tag[data-tooltip],
+    .statistic-tile[data-tooltip],
+    .tile__status-item[data-tooltip] {
+        cursor: help;
+    }
 
-.content__button-container[data-tooltip]::after {
-    left: 50%;
-    max-width: fit-content;
-    top: calc(100% + 8px);
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
+    [data-tooltip] {
+        anchor-name: --tooltip-parent !important;
+        anchor-scope: --tooltip-parent !important;
+    }
 
-.about-dialog__button-container[data-tooltip]::after,
-.details-dialog__button-container[data-tooltip]::after {
-    left: 0;
-    max-width: fit-content;
-    top: calc(100% + 8px);
-    white-space: nowrap;
-}
+    [data-tooltip]::after {
+        backdrop-filter: var(--l1-overlay-background-filter, blur(6px));
+        -webkit-backdrop-filter: blur(6px);
+        background-color: var(--l1-background-colour, hsl(247 10% 95%));
+        border: var(--l1-border, 1px solid hsl(247 10% 100%));
+        border-radius: 8px;
+        box-shadow: var(--l1-tooltip-box-shadow, 0 0 12px 0 hsl(0 0% 0% / 40%));
+        color: var(--secondary-text-colour, hsl(0 0% 30%));
+        content: attr(data-tooltip);
+        display: none;
+        font-size: 13px;
+        font-weight: normal;
+        opacity: 0;
+        padding: 4px 8px;
+        pointer-events: none;
+        position: fixed;
+        position-anchor: --tooltip-parent;
+        text-shadow: none;
+        transition-behavior: allow-discrete;
+        transition-duration: 200ms;
+        transition-property: display, opacity;
+        z-index: 6000;
+    }
 
-.details-dialog__search-close-button-container[data-tooltip]::after {
-    left: 50%;
-    transform: translateX(-50%);
-}
+    .content__button-container[data-tooltip]::after {
+        margin-top: 8px;
+        max-width: fit-content;
+        position-area: bottom center;
+        white-space: nowrap;
+    }
 
-.statistic-tile[data-tooltip]::after {
-    left: 50%;
-    top: calc(100% + 8px);
-    transform: translateX(-50%);
-    width: 100%;
-}
+    .about-dialog__button-container[data-tooltip]::after,
+    .details-dialog__button-container[data-tooltip]::after {
+        left: anchor(left);
+        max-width: fit-content;
+        top: calc(anchor(bottom) + 8px);
+        white-space: nowrap;
+    }
 
-.statistic-tile[data-tooltip]:hover::after,
-.tag[data-tooltip]:hover::after,
-.tile__status-item[data-tooltip]:hover::after {
-    transition-delay: 400ms;
-}
+    .details-dialog__search-close-button-container[data-tooltip]::after {
+        left: auto;
+        position-area: bottom center;
+    }
 
-.tag[data-tooltip]::after {
-    left: 0;
-    top: calc(100% + 6px);
-}
+    .statistic-tile[data-tooltip]::after {
+        margin-top: 8px;
+        max-width: 100%;
+        position-area: bottom center;
+    }
 
-.tile__controls-container > button[data-tooltip]::after {
-    bottom: calc(100% + 12px);
-    left: 50%;
-    max-width: fit-content;
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
+    .statistic-tile[data-tooltip]:hover::after,
+    .tag[data-tooltip]:hover::after,
+    .tile__status-item[data-tooltip]:hover::after {
+        transition-delay: 400ms;
+    }
 
-.list-view-table__cell-controls-container > a[data-tooltip]::after,
-.list-view-table__cell-controls-container > button[data-tooltip]::after {
-    bottom: calc(100% + 8px);
-    left: 50%;
-    max-width: fit-content;
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
+    .tag[data-tooltip]::after {
+        left: 0;
+        position: absolute;
+        top: calc(anchor(bottom) + 6px);
+    }
 
-.tile__status-item[data-tooltip]::after {
-    bottom: calc(100% + 6px);
-    left: 0;
-}
+    .tile__controls-container > button[data-tooltip]::after {
+        margin-bottom: 12px;
+        max-width: fit-content;
+        position-area: top center;
+        white-space: nowrap;
+    }
 
-[data-tooltip]:hover::after {
-    display: block;
-    opacity: 1;
-    @starting-style {
+    .list-view-table__cell-controls-container > a[data-tooltip]::after,
+    .list-view-table__cell-controls-container > button[data-tooltip]::after {
+        margin-bottom: 8px;
+        max-width: fit-content;
+        position-area: top center;
+        white-space: nowrap;
+    }
+
+    .tile__status-item[data-tooltip]::after {
+        bottom: calc(anchor(top) + 6px);
+        left: 0;
+        position: absolute;
+    }
+
+    [data-tooltip]:hover::after {
+        display: block;
+        opacity: 1;
+        @starting-style {
+            opacity: 0;
+        }
+    }
+
+    .content__button-container--show-popup[data-tooltip]::after,
+    .hyperlink-popup-button:has(+ .hyperlink-popup--visible)[data-tooltip]::after {
+        display: none;
         opacity: 0;
     }
-}
 
-.content__button-container--show-popup[data-tooltip]::after,
-.hyperlink-popup-button:has(+ .hyperlink-popup--visible)[data-tooltip]::after {
-    display: none;
-    opacity: 0;
 }
-
 
 
 /* 14 - Container queries */
