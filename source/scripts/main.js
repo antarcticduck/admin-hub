@@ -1239,7 +1239,7 @@ async function fetchSites() {
         // We'll remove the existing rows, columns and headers from the list view table.
         listViewTableBody.replaceChildren();
         listViewTableColumns.replaceChildren();
-        listViewTableHead.innerHTML = '<tr></tr>';
+        listViewTableHead.replaceChildren(document.createElement('tr'));
         const tableHeadRow = listViewTableHead.querySelector('tr');
 
         // Column 0 (site image).
@@ -1254,7 +1254,9 @@ async function fetchSites() {
         const column1Header = document.createElement('th');
         column1Header.classList = 'list-view-table__header--sortable';
         column1Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(1)');
-        column1Header.innerHTML = '<span>ID</span>';
+        column1Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'ID' })
+        );
         listViewTableColumns.appendChild(column1);
         tableHeadRow.appendChild(column1Header);
 
@@ -1263,7 +1265,9 @@ async function fetchSites() {
         const column2Header = document.createElement('th');
         column2Header.classList = 'list-view-table__header--sortable';
         column2Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(2)');
-        column2Header.innerHTML = '<span>Name</span>';
+        column2Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'Name' })
+        );
         listViewTableColumns.appendChild(column2);
         tableHeadRow.appendChild(column2Header);
 
@@ -1272,7 +1276,9 @@ async function fetchSites() {
         const column3Header = document.createElement('th');
         column3Header.classList = 'list-view-table__header--sortable';
         column3Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(3)');
-        column3Header.innerHTML = '<span>Tags</span>';
+        column3Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'Tags' })
+        );
         listViewTableColumns.appendChild(column3);
         tableHeadRow.appendChild(column3Header);
 
@@ -1282,7 +1288,9 @@ async function fetchSites() {
             const customColumnHeader = document.createElement('th');
             customColumnHeader.classList = 'list-view-table__header--sortable';
             customColumnHeader.setAttribute('onclick', `listViewTableHeader_ClickEvent(${4 + i})`);
-            customColumnHeader.innerHTML = `<span>${listViewCustomColumns[i]}</span>`;
+            customColumnHeader.replaceChildren(
+                Object.assign(document.createElement('span'), { textContent: listViewCustomColumns[i] })
+            );
             listViewTableColumns.appendChild(customColumn);
             tableHeadRow.appendChild(customColumnHeader);
         }
@@ -1291,7 +1299,7 @@ async function fetchSites() {
         const lastColumn = document.createElement('col');
         lastColumn.classList = 'list-view-table__column--min-width';
         const lastColumnHeader = document.createElement('th');
-        lastColumnHeader.innerHTML = '<span></span>';
+        lastColumnHeader.replaceChildren(document.createElement('span'));
         listViewTableColumns.appendChild(lastColumn);
         tableHeadRow.appendChild(lastColumnHeader);
 
@@ -1302,7 +1310,9 @@ async function fetchSites() {
 
             // We'll create a new tile group.
             const newTileGroup = document.importNode(tileGroupTemplate.content, true);
-            newTileGroup.querySelector('.dashboard-view__group-title-text').innerHTML = `<span>${sitesJson[i].GroupName}</span>`;
+            newTileGroup.querySelector('.dashboard-view__group-title-text').replaceChildren(
+                Object.assign(document.createElement('span'), { textContent: sitesJson[i].GroupName })
+            );
 
             if (Array.isArray(sitesJson[i].Sites) && sitesJson[i].Sites.length > 0) {
 
@@ -1319,7 +1329,9 @@ async function fetchSites() {
                     // We'll create a new tile subgroup.
                     const currentSubgroup = sitesJson[i].Subgroups[j];
                     const newTileSubgroup = document.importNode(tileSubgroupTemplate.content, true);
-                    newTileSubgroup.querySelector('.dashboard-view__subgroup-title-text').innerHTML = `<span>${currentSubgroup.SubgroupName}</span>`;
+                    newTileSubgroup.querySelector('.dashboard-view__subgroup-title-text').replaceChildren(
+                        Object.assign(document.createElement('span'), { textContent: currentSubgroup.SubgroupName })
+                    );
 
                     // We'll add each site to the tile subgroup in dashboard view and in to the table in list view.
                     newTileSubgroup.querySelector('.dashboard-view__subgroup-container').appendChild(createTileContainer(currentSubgroup.Sites));
