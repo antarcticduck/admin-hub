@@ -16,6 +16,7 @@ let listViewColumnVisibilityWidths = [];
 let listViewCustomColumns = [];
 let rssFeedFileAge;
 let rssFeedLinkCreated = false;
+let siteImageCount = 0;
 let sitesFileAge;
 let statisticsFileAge;
 let tileContainerCount = 0;
@@ -538,7 +539,7 @@ function setView(view, isOnWindowLoad = false) {
 }
 
 // Function to show the details dialog for a site.
-async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
+async function showDetailsDialog(siteID, siteName, siteImageID, siteDetails) {
 
     await closeDetailsDialog();
 
@@ -546,12 +547,17 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
     const detailsDialogTemplate = document.querySelector("#detailsDialogTemplate");
     const newDetailsDialog = document.importNode(detailsDialogTemplate.content, true);
     const newDetailsDialogElement = newDetailsDialog.querySelector('.details-dialog');
+    const siteImage = document.querySelector(`#${siteImageID}`);
     newDetailsDialogElement.addEventListener('close', (event) => { detailsDialog_CloseEvent(event) }, { once: true });
     newDetailsDialogElement.addEventListener('keydown', detailsDialog_KeyDownEvent);
     newDetailsDialogElement.setAttribute('style', `top: ${(header.getBoundingClientRect().bottom + 12)}px`);
     newDetailsDialogElement.setAttribute('data-siteid', siteID);
-    newDetailsDialog.querySelector('.details-dialog__image-wrapper').innerHTML = siteImage;
-    newDetailsDialog.querySelector('.details-dialog__title-text').innerText = siteName;
+    if (siteImage !== null) {
+        const siteImageClone = siteImage.cloneNode();
+        siteImageClone.removeAttribute('id');
+        newDetailsDialog.querySelector('.details-dialog__image-wrapper').appendChild(siteImageClone);
+    }
+    newDetailsDialog.querySelector('.details-dialog__title-text').textContent = siteName;
 
     if (siteDetails) {
 
@@ -565,23 +571,29 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
             if (i === 0) {
                 newDetailsDialogDisclosure.querySelector('details').setAttribute('open', true);
             }
-            newDetailsDialogDisclosure.querySelector('summary').innerText = siteDetailsJson[i].Title;
+            newDetailsDialogDisclosure.querySelector('summary').textContent = siteDetailsJson[i].Title;
 
             if (siteDetailsJson[i].Data.length > 0) {
 
                 // We'll add a table row for each data item in the category.
                 for (let j = 0; j < siteDetailsJson[i].Data.length; j++) {
+
+                    const newKeyCell = document.createElement('td');
+                    newKeyCell.textContent = siteDetailsJson[i].Data[j].Key;
+
+                    const newValueCell = document.createElement('td');
+                    newValueCell.textContent = siteDetailsJson[i].Data[j].Value;
+
                     const newTableRow = document.createElement('tr');
-                    newTableRow.innerHTML = `
-                        <td>${siteDetailsJson[i].Data[j].Key}:</td>
-                        <td>${siteDetailsJson[i].Data[j].Value}</td>
-                    `
+                    newTableRow.appendChild(newKeyCell);
+                    newTableRow.appendChild(newValueCell);
                     newDetailsDialogDisclosure.querySelector('tbody').appendChild(newTableRow);
+
                 }
 
                 // We'll set the caption text if one is specified (otherwise we'll remove the element).
                 if (siteDetailsJson[i].Caption) {
-                    newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').innerText = siteDetailsJson[i].Caption;
+                    newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').textContent = siteDetailsJson[i].Caption;
                 } else {
                     newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').remove();
                 }
@@ -590,7 +602,7 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
 
                 // We'll remove the table and set the caption text to show that no data is currently available.
                 newDetailsDialogDisclosure.querySelector('table').remove();
-                newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').innerText = 'No data currently available.';
+                newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').textContent = 'No data currently available.';
 
             }
 
@@ -1893,7 +1905,7 @@ function listViewTableRow_ClickEvent(element, event) {
         showDetailsDialog(
             element.getAttribute('data-siteid'),
             element.getAttribute('data-sitename'),
-            element.getAttribute('data-siteimage'),
+            element.getAttribute('data-siteimageid'),
             element.getAttribute('data-sitedetails')
         );
     }
@@ -2197,7 +2209,7 @@ function tileShowDetailsButton_ClickEvent(element) {
     showDetailsDialog(
         element.getAttribute('data-siteid'),
         element.getAttribute('data-sitename'),
-        element.getAttribute('data-siteimage'),
+        element.getAttribute('data-siteimageid'),
         element.getAttribute('data-sitedetails')
     );
 }
@@ -2270,6 +2282,9 @@ function createSiteRow(siteConfiguration) {
     newSiteImageWrapper.classList = 'list-view-table__cell-image-container';
 
     const newSiteImage = document.createElement('img');
+    newSiteImage.setAttribute('id', `siteImage${siteImageCount.toString()}`);
+    siteImageCount++;
+
     if (typeof siteConfiguration.ImagePath === 'string' && siteConfiguration.ImagePath.length > 0) {
         newSiteImage.classList.add(...createImageClassList(siteConfiguration));
         newSiteImage.setAttribute('src', siteConfiguration.ImagePath);
@@ -2277,6 +2292,7 @@ function createSiteRow(siteConfiguration) {
         newSiteImage.classList.add('image--allow-brightness-control');
         newSiteImage.setAttribute('src', 'images/data-centre.svg');
     }
+
     newSiteImage.setAttribute('alt', '?');
 
     newSiteImageWrapper.appendChild(newSiteImage);
@@ -2391,7 +2407,7 @@ function createSiteRow(siteConfiguration) {
         newSiteRow.setAttribute('onclick', 'listViewTableRow_ClickEvent(this, event)');
         newSiteRow.setAttribute('data-siteid', siteConfiguration.ID);
         newSiteRow.setAttribute('data-sitename', siteConfiguration.Name);
-        newSiteRow.setAttribute('data-siteimage', newSiteImage.outerHTML);
+        newSiteRow.setAttribute('data-siteimageid', newSiteImage.getAttribute('id'));
         newSiteRow.setAttribute('data-sitedetails', JSON.stringify(siteConfiguration.AdditionalDetails));
     }
 
@@ -2528,6 +2544,8 @@ function createSiteTile(siteConfiguration, tileContainerID) {
     // <div class='tile__image-container'>
 
     const newSiteImage = document.createElement('img');
+    newSiteImage.setAttribute('id', `siteImage${siteImageCount.toString()}`);
+    siteImageCount++;
 
     if (typeof siteConfiguration.ImagePath === 'string' && siteConfiguration.ImagePath.length > 0) {
         newSiteImage.classList.add(...createImageClassList(siteConfiguration));
@@ -2589,7 +2607,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
         const newAdditionalDetailsButtonElement = newAdditionalDetailsButton.querySelector('.tile__show-details-button');
         newAdditionalDetailsButtonElement.setAttribute('data-siteid', siteConfiguration.ID);
         newAdditionalDetailsButtonElement.setAttribute('data-sitename', siteConfiguration.Name);
-        newAdditionalDetailsButtonElement.setAttribute('data-siteimage', newSiteImage.outerHTML);
+        newAdditionalDetailsButtonElement.setAttribute('data-siteimageid', newSiteImage.getAttribute('id'));
         newAdditionalDetailsButtonElement.setAttribute('data-sitedetails', JSON.stringify(siteConfiguration.AdditionalDetails));
         controlsContainerElement.appendChild(newAdditionalDetailsButton);
     }
