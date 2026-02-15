@@ -1123,7 +1123,7 @@ function fetchRssFeed() {
         rssFeedPopupItemContainer.replaceChildren();
 
         // We'll set the default item link to be either the channel link (if specified) or the URL to the RSS feed.
-        const rssLink = rss.querySelector('channel > link')?.innerHTML;
+        const rssLink = rss.querySelector('channel > link')?.textContent;
         const rssItemDefaultLink =
             (typeof rssLink === 'string' && rssLink.length > 0)
                 ? rssLink
@@ -1135,7 +1135,7 @@ function fetchRssFeed() {
             const newRssFeedPopupItem = document.importNode(rssFeedPopupItemTemplate.content, true);
 
             // We'll set the hyperlink URL.
-            const rssItemLink = rssItems[i].querySelector('link')?.innerHTML;
+            const rssItemLink = rssItems[i].querySelector('link')?.textContent;
             const rssItemLinkHref =
                 (typeof rssItemLink === 'string' && rssItemLink.length > 0)
                     ? rssItemLink
@@ -1143,25 +1143,25 @@ function fetchRssFeed() {
             newRssFeedPopupItem.querySelector('.rss-feed-popup__item').setAttribute('href', rssItemLinkHref);
 
             // We'll set or remove the item's title.
-            const rssItemTitle = rssItems[i].querySelector('title')?.innerHTML;
+            const rssItemTitle = rssItems[i].querySelector('title')?.textContent;
             if (typeof rssItemTitle === 'string' && rssItemTitle.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').innerHTML = rssItemTitle;
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').textContent = rssItemTitle;
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').remove();
             }
 
             // We'll set or remove the item's publication date.
-            const rssItemPubDate = rssItems[i].querySelector('pubDate')?.innerHTML;
+            const rssItemPubDate = rssItems[i].querySelector('pubDate')?.textContent;
             if (typeof rssItemPubDate === 'string' && rssItemPubDate.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').innerHTML = rssItemPubDate.replace('GMT', 'UTC');
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').textContent = rssItemPubDate.replace('GMT', 'UTC');
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').remove();
             }
 
             // We'll set or remove the item's description.
-            const rssItemDescription = rssItems[i].querySelector('description')?.innerHTML;
+            const rssItemDescription = rssItems[i].querySelector('description')?.textContent;
             if (typeof rssItemDescription === 'string' && rssItemDescription.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').innerHTML = rssItemDescription;
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').textContent = rssItemDescription;
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').remove()
             }
@@ -1177,7 +1177,7 @@ function fetchRssFeed() {
             rssFeedLink.setAttribute('href', rssUrl);
             rssFeedLink.setAttribute('rel', 'noopener noreferrer');
             rssFeedLink.setAttribute('target', '_blank');
-            rssFeedLink.innerText = 'RSS';
+            rssFeedLink.textContent = 'RSS';
             document.querySelector('.sidebar__footer-controls-container').appendChild(rssFeedLink);
             rssFeedLinkCreated = true;
         }
