@@ -944,9 +944,9 @@ function fetchClocks() {
 
             // We'll create a new clock item and add it to the container.
             const newClockPopupItem = document.importNode(clockPopupItemTemplate.content, true);
-            newClockPopupItem.querySelector('.clock-popup__item-title-text').innerText = clockTitle;
+            newClockPopupItem.querySelector('.clock-popup__item-title-text').textContent = clockTitle;
             if (clockSubtitle.length > 0) {
-                newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').innerText = clockSubtitle;
+                newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').textContent = clockSubtitle;
             } else {
                 newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').remove();
             }
