@@ -344,7 +344,12 @@ function searchList() {
         contentSearchCloseButtonContainer.classList.remove('content__button-container--hidden');
 
         // We'll show the user how many rows have been filtered.
-        contentSearchCaptionText.innerHTML = ('Showing: <b>' + visibleRowCount.toString() + '</b> of <b>' + listViewTableRows.length.toString() + '</b>');
+        contentSearchCaptionText.replaceChildren(
+            document.createTextNode('Showing: '),
+            Object.assign(document.createElement('b'), { textContent: visibleRowCount.toString() }),
+            document.createTextNode(' of '),
+            Object.assign(document.createElement('b'), { textContent: listViewTableRows.length.toString() })
+        );
 
     }
 
@@ -413,7 +418,12 @@ function searchTiles() {
         contentSearchCloseButtonContainer.classList.remove('content__button-container--hidden');
 
         // We'll show the user how many tiles have been filtered.
-        contentSearchCaptionText.innerHTML = ('Showing: <b>' + visibleTilesCount.toString() + '</b> of <b>' + tiles.length.toString() + '</b>');
+        contentSearchCaptionText.replaceChildren(
+            document.createTextNode('Showing: '),
+            Object.assign(document.createElement('b'), { textContent: visibleTilesCount.toString() }),
+            document.createTextNode(' of '),
+            Object.assign(document.createElement('b'), { textContent: tiles.length.toString() })
+        );
 
     }
 
