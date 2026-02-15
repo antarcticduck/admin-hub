@@ -1422,21 +1422,23 @@ async function fetchStatistics() {
 
             // We'll set the statistic tile's image path.
             if (typeof statisticsJson[i].ImagePath === 'string' && statisticsJson[i].ImagePath.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__image-wrapper').innerHTML = `<img src='${statisticsJson[i].ImagePath}' alt='?'></img>`;
+                newStatisticTile.querySelector('.statistic-tile__image-wrapper').replaceChildren(
+                    Object.assign(document.createElement('img'), { src: statisticsJson[i].ImagePath, alt: '?'} )
+                );
             } else {
                 newStatisticTile.querySelector('.statistic-tile__image-wrapper').remove();
             }
 
             // We'll set the statistic tile's title.
             if (typeof statisticsJson[i].Title === 'string' && statisticsJson[i].Title.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__title-text').innerText = statisticsJson[i].Title;
+                newStatisticTile.querySelector('.statistic-tile__title-text').textContent = statisticsJson[i].Title;
             } else {
                 newStatisticTile.querySelector('.statistic-tile__title-text').remove();
             }
 
             // We'll set the statistic tile's value.
             if (typeof statisticsJson[i].Value === 'string' && statisticsJson[i].Value.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__value-text').innerText = statisticsJson[i].Value;
+                newStatisticTile.querySelector('.statistic-tile__value-text').textContent = statisticsJson[i].Value;
             } else {
                 newStatisticTile.querySelector('.statistic-tile__value-text').remove();
             }
