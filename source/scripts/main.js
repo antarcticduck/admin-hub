@@ -737,16 +737,16 @@ async function updateClocks() {
         // We'll determine the status icon and text that should be displayed in the UI.
         if (minutesSinceLastUpdate < 1) {
             contentStatusIndicator.classList.add('tag--green');
-            contentStatusText.innerText = 'Data updated just now';
+            contentStatusText.textContent = 'Data updated just now';
         } else if (minutesSinceLastUpdate < 15) {
             contentStatusIndicator.classList.add('tag--green');
-            contentStatusText.innerText = `Data updated ${(minutesSinceLastUpdate === 1) ? '1 minute ago' : (minutesSinceLastUpdate.toString() + ' minutes ago')}`;
+            contentStatusText.textContent = `Data updated ${(minutesSinceLastUpdate === 1) ? '1 minute ago' : (minutesSinceLastUpdate.toString() + ' minutes ago')}`;
         } else if (autoDataUpdate === 'true') {
             contentStatusIndicator.classList.add('tag--red');
-            contentStatusText.innerText = 'Data expired, waiting for updates...';
+            contentStatusText.textContent = 'Data expired, waiting for updates...';
         } else {
             contentStatusIndicator.classList.add('tag--yellow');
-            contentStatusText.innerText = 'Data expired, please refresh page';
+            contentStatusText.textContent = 'Data expired, please refresh page';
         }
 
         // If its been more than 5 minutes since the last update we'll flag that we need to fetch live data on the next clock tick.
@@ -757,7 +757,7 @@ async function updateClocks() {
     } else {
 
         contentStatusIndicator.classList.add('tag--red');
-        contentStatusText.innerText = 'Error updating data';
+        contentStatusText.textContent = 'Error updating data';
 
         if (autoDataUpdate === 'true') {
             fetchLiveDataOnNextClockTick = true;
@@ -780,7 +780,7 @@ async function updateClocks() {
         }
 
         const timeZoneDateTime = new Date(timeZoneDateTimeString);
-        clockPopupItemTimeText[i].innerHTML = `${('0' + timeZoneDateTime.getHours()).slice(-2)}:${('0' + timeZoneDateTime.getMinutes()).slice(-2)}`;
+        clockPopupItemTimeText[i].textContent = `${('0' + timeZoneDateTime.getHours()).slice(-2)}:${('0' + timeZoneDateTime.getMinutes()).slice(-2)}`;
 
     }
 
