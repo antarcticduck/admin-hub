@@ -16,6 +16,7 @@ let listViewColumnVisibilityWidths = [];
 let listViewCustomColumns = [];
 let rssFeedFileAge;
 let rssFeedLinkCreated = false;
+let siteImageCount = 0;
 let sitesFileAge;
 let statisticsFileAge;
 let tileContainerCount = 0;
@@ -320,7 +321,7 @@ function searchList() {
 
         content.classList.remove('content--list-view-search-mode');
         contentSearchCloseButtonContainer.classList.add('content__button-container--hidden');
-        contentSearchCaptionText.innerHTML = '';
+        contentSearchCaptionText.replaceChildren();
 
     } else {
 
@@ -343,7 +344,12 @@ function searchList() {
         contentSearchCloseButtonContainer.classList.remove('content__button-container--hidden');
 
         // We'll show the user how many rows have been filtered.
-        contentSearchCaptionText.innerHTML = ('Showing: <b>' + visibleRowCount.toString() + '</b> of <b>' + listViewTableRows.length.toString() + '</b>');
+        contentSearchCaptionText.replaceChildren(
+            document.createTextNode('Showing: '),
+            Object.assign(document.createElement('b'), { textContent: visibleRowCount.toString() }),
+            document.createTextNode(' of '),
+            Object.assign(document.createElement('b'), { textContent: listViewTableRows.length.toString() })
+        );
 
     }
 
@@ -386,7 +392,7 @@ function searchTiles() {
         sidebar.removeAttribute('inert');
         content.classList.remove('content--search-mode');
         contentSearchCloseButtonContainer.classList.add('content__button-container--hidden');
-        contentSearchCaptionText.innerHTML = '';
+        contentSearchCaptionText.replaceChildren();
 
     } else {
 
@@ -412,7 +418,12 @@ function searchTiles() {
         contentSearchCloseButtonContainer.classList.remove('content__button-container--hidden');
 
         // We'll show the user how many tiles have been filtered.
-        contentSearchCaptionText.innerHTML = ('Showing: <b>' + visibleTilesCount.toString() + '</b> of <b>' + tiles.length.toString() + '</b>');
+        contentSearchCaptionText.replaceChildren(
+            document.createTextNode('Showing: '),
+            Object.assign(document.createElement('b'), { textContent: visibleTilesCount.toString() }),
+            document.createTextNode(' of '),
+            Object.assign(document.createElement('b'), { textContent: tiles.length.toString() })
+        );
 
     }
 
@@ -492,7 +503,10 @@ function setTileContainerResponsiveUI() {
     for (let i = 0; i < dashboardViewTileContainers.length; i++) {
         const placeholderText = dashboardViewTileContainers[i].querySelector('.dashboard-view__placeholder-text')
         if (dashboardViewTileContainers[i].querySelectorAll('.tile').length === 0) {
-            dashboardViewTileContainers[i].innerHTML = '<div class="dashboard-view__placeholder-text">There are no sites to show</div>';
+            const placeholderTextElement = document.createElement('div');
+            placeholderTextElement.classList = 'dashboard-view__placeholder-text';
+            placeholderTextElement.textContent = 'There are no sites to show';
+            dashboardViewTileContainers[i].replaceChildren(placeholderTextElement);
         } else if (placeholderText !== null) {
             dashboardViewTileContainers[i].removeChild(placeholderText);
         }
@@ -535,7 +549,7 @@ function setView(view, isOnWindowLoad = false) {
 }
 
 // Function to show the details dialog for a site.
-async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
+async function showDetailsDialog(siteID, siteName, siteImageID, siteDetails) {
 
     await closeDetailsDialog();
 
@@ -543,12 +557,17 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
     const detailsDialogTemplate = document.querySelector("#detailsDialogTemplate");
     const newDetailsDialog = document.importNode(detailsDialogTemplate.content, true);
     const newDetailsDialogElement = newDetailsDialog.querySelector('.details-dialog');
+    const siteImage = document.querySelector(`#${siteImageID}`);
     newDetailsDialogElement.addEventListener('close', (event) => { detailsDialog_CloseEvent(event) }, { once: true });
     newDetailsDialogElement.addEventListener('keydown', detailsDialog_KeyDownEvent);
     newDetailsDialogElement.setAttribute('style', `top: ${(header.getBoundingClientRect().bottom + 12)}px`);
     newDetailsDialogElement.setAttribute('data-siteid', siteID);
-    newDetailsDialog.querySelector('.details-dialog__image-wrapper').innerHTML = siteImage;
-    newDetailsDialog.querySelector('.details-dialog__title-text').innerText = siteName;
+    if (siteImage !== null) {
+        const siteImageClone = siteImage.cloneNode();
+        siteImageClone.removeAttribute('id');
+        newDetailsDialog.querySelector('.details-dialog__image-wrapper').appendChild(siteImageClone);
+    }
+    newDetailsDialog.querySelector('.details-dialog__title-text').textContent = siteName;
 
     if (siteDetails) {
 
@@ -562,23 +581,25 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
             if (i === 0) {
                 newDetailsDialogDisclosure.querySelector('details').setAttribute('open', true);
             }
-            newDetailsDialogDisclosure.querySelector('summary').innerText = siteDetailsJson[i].Title;
+            newDetailsDialogDisclosure.querySelector('summary').textContent = siteDetailsJson[i].Title;
 
             if (siteDetailsJson[i].Data.length > 0) {
 
                 // We'll add a table row for each data item in the category.
                 for (let j = 0; j < siteDetailsJson[i].Data.length; j++) {
                     const newTableRow = document.createElement('tr');
-                    newTableRow.innerHTML = `
-                        <td>${siteDetailsJson[i].Data[j].Key}:</td>
-                        <td>${siteDetailsJson[i].Data[j].Value}</td>
-                    `
+                    newTableRow.appendChild(
+                        Object.assign(document.createElement('td'), { textContent: siteDetailsJson[i].Data[j].Key })
+                    );
+                    newTableRow.appendChild(
+                        Object.assign(document.createElement('td'), { textContent: siteDetailsJson[i].Data[j].Value })
+                    );
                     newDetailsDialogDisclosure.querySelector('tbody').appendChild(newTableRow);
                 }
 
                 // We'll set the caption text if one is specified (otherwise we'll remove the element).
                 if (siteDetailsJson[i].Caption) {
-                    newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').innerText = siteDetailsJson[i].Caption;
+                    newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').textContent = siteDetailsJson[i].Caption;
                 } else {
                     newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').remove();
                 }
@@ -587,7 +608,7 @@ async function showDetailsDialog(siteID, siteName, siteImage, siteDetails) {
 
                 // We'll remove the table and set the caption text to show that no data is currently available.
                 newDetailsDialogDisclosure.querySelector('table').remove();
-                newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').innerText = 'No data currently available.';
+                newDetailsDialogDisclosure.querySelector('.details-dialog__caption-text').textContent = 'No data currently available.';
 
             }
 
@@ -734,16 +755,16 @@ async function updateClocks() {
         // We'll determine the status icon and text that should be displayed in the UI.
         if (minutesSinceLastUpdate < 1) {
             contentStatusIndicator.classList.add('tag--green');
-            contentStatusText.innerText = 'Data updated just now';
+            contentStatusText.textContent = 'Data updated just now';
         } else if (minutesSinceLastUpdate < 15) {
             contentStatusIndicator.classList.add('tag--green');
-            contentStatusText.innerText = `Data updated ${(minutesSinceLastUpdate === 1) ? '1 minute ago' : (minutesSinceLastUpdate.toString() + ' minutes ago')}`;
+            contentStatusText.textContent = `Data updated ${(minutesSinceLastUpdate === 1) ? '1 minute ago' : (minutesSinceLastUpdate.toString() + ' minutes ago')}`;
         } else if (autoDataUpdate === 'true') {
             contentStatusIndicator.classList.add('tag--red');
-            contentStatusText.innerText = 'Data expired, waiting for updates...';
+            contentStatusText.textContent = 'Data expired, waiting for updates...';
         } else {
             contentStatusIndicator.classList.add('tag--yellow');
-            contentStatusText.innerText = 'Data expired, please refresh page';
+            contentStatusText.textContent = 'Data expired, please refresh page';
         }
 
         // If its been more than 5 minutes since the last update we'll flag that we need to fetch live data on the next clock tick.
@@ -754,7 +775,7 @@ async function updateClocks() {
     } else {
 
         contentStatusIndicator.classList.add('tag--red');
-        contentStatusText.innerText = 'Error updating data';
+        contentStatusText.textContent = 'Error updating data';
 
         if (autoDataUpdate === 'true') {
             fetchLiveDataOnNextClockTick = true;
@@ -777,7 +798,7 @@ async function updateClocks() {
         }
 
         const timeZoneDateTime = new Date(timeZoneDateTimeString);
-        clockPopupItemTimeText[i].innerHTML = `${('0' + timeZoneDateTime.getHours()).slice(-2)}:${('0' + timeZoneDateTime.getMinutes()).slice(-2)}`;
+        clockPopupItemTimeText[i].textContent = `${('0' + timeZoneDateTime.getHours()).slice(-2)}:${('0' + timeZoneDateTime.getMinutes()).slice(-2)}`;
 
     }
 
@@ -879,7 +900,7 @@ function fetchClocks() {
 
         const clockPopupItemTemplate = document.querySelector("#clockPopupItemTemplate");
         const clockPopupItemContainer = document.querySelector('.clock-popup__item-container');
-        clockPopupItemContainer.innerHTML = '';
+        clockPopupItemContainer.replaceChildren();
 
         for (let i = 0; i < clocksJson.length; i++) {
 
@@ -919,9 +940,9 @@ function fetchClocks() {
 
             // We'll create a new clock item and add it to the container.
             const newClockPopupItem = document.importNode(clockPopupItemTemplate.content, true);
-            newClockPopupItem.querySelector('.clock-popup__item-title-text').innerText = clockTitle;
+            newClockPopupItem.querySelector('.clock-popup__item-title-text').textContent = clockTitle;
             if (clockSubtitle.length > 0) {
-                newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').innerText = clockSubtitle;
+                newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').textContent = clockSubtitle;
             } else {
                 newClockPopupItem.querySelector('.clock-popup__item-subtitle-text').remove();
             }
@@ -952,7 +973,7 @@ function fetchHyperlinks() {
     .then(hyperlinksJson => {
 
         const hyperlinkGroupContainer = document.querySelector('.sidebar__hyperlink-group-container');
-        hyperlinkGroupContainer.innerHTML = '';
+        hyperlinkGroupContainer.replaceChildren();
 
         for (let i = 0; i < hyperlinksJson.length; i++) {
 
@@ -960,7 +981,7 @@ function fetchHyperlinks() {
             if (typeof hyperlinksJson[i].Title === 'string' && hyperlinksJson[i].Title.length > 0) {
                 const newHyperlinkGroupTitleText = document.createElement('div');
                 newHyperlinkGroupTitleText.className = 'sidebar__hyperlink-group-title-text';
-                newHyperlinkGroupTitleText.innerText = hyperlinksJson[i].Title;
+                newHyperlinkGroupTitleText.textContent = hyperlinksJson[i].Title;
                 hyperlinkGroupContainer.appendChild(newHyperlinkGroupTitleText);
             }
 
@@ -1052,7 +1073,7 @@ async function fetchLiveData() {
         return;
     }
 
-    dashboardViewTileContainerPinned.innerHTML = '';
+    dashboardViewTileContainerPinned.replaceChildren();
 
     // If any pinned tiles were specified in the local storage we'll pin them (if they exist).
     if (isLocalStorageAccessible && pinnedSites !== null) {
@@ -1117,10 +1138,10 @@ function fetchRssFeed() {
         const rssItems = rss.querySelectorAll('item');
         const rssFeedPopupItemTemplate = document.querySelector("#rssFeedPopupItemTemplate");
         const rssFeedPopupItemContainer = document.querySelector('.rss-feed-popup__item-container');
-        rssFeedPopupItemContainer.innerHTML = '';
+        rssFeedPopupItemContainer.replaceChildren();
 
         // We'll set the default item link to be either the channel link (if specified) or the URL to the RSS feed.
-        const rssLink = rss.querySelector('channel > link')?.innerHTML;
+        const rssLink = rss.querySelector('channel > link')?.textContent;
         const rssItemDefaultLink =
             (typeof rssLink === 'string' && rssLink.length > 0)
                 ? rssLink
@@ -1132,7 +1153,7 @@ function fetchRssFeed() {
             const newRssFeedPopupItem = document.importNode(rssFeedPopupItemTemplate.content, true);
 
             // We'll set the hyperlink URL.
-            const rssItemLink = rssItems[i].querySelector('link')?.innerHTML;
+            const rssItemLink = rssItems[i].querySelector('link')?.textContent;
             const rssItemLinkHref =
                 (typeof rssItemLink === 'string' && rssItemLink.length > 0)
                     ? rssItemLink
@@ -1140,25 +1161,25 @@ function fetchRssFeed() {
             newRssFeedPopupItem.querySelector('.rss-feed-popup__item').setAttribute('href', rssItemLinkHref);
 
             // We'll set or remove the item's title.
-            const rssItemTitle = rssItems[i].querySelector('title')?.innerHTML;
+            const rssItemTitle = rssItems[i].querySelector('title')?.textContent;
             if (typeof rssItemTitle === 'string' && rssItemTitle.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').innerHTML = rssItemTitle;
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').textContent = rssItemTitle;
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-title-text').remove();
             }
 
             // We'll set or remove the item's publication date.
-            const rssItemPubDate = rssItems[i].querySelector('pubDate')?.innerHTML;
+            const rssItemPubDate = rssItems[i].querySelector('pubDate')?.textContent;
             if (typeof rssItemPubDate === 'string' && rssItemPubDate.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').innerHTML = rssItemPubDate.replace('GMT', 'UTC');
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').textContent = rssItemPubDate.replace('GMT', 'UTC');
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-subtitle-text').remove();
             }
 
             // We'll set or remove the item's description.
-            const rssItemDescription = rssItems[i].querySelector('description')?.innerHTML;
+            const rssItemDescription = rssItems[i].querySelector('description')?.textContent;
             if (typeof rssItemDescription === 'string' && rssItemDescription.length > 0) {
-                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').innerHTML = rssItemDescription;
+                newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').textContent = rssItemDescription;
             } else {
                 newRssFeedPopupItem.querySelector('.rss-feed-popup__item-body-text').remove()
             }
@@ -1174,7 +1195,7 @@ function fetchRssFeed() {
             rssFeedLink.setAttribute('href', rssUrl);
             rssFeedLink.setAttribute('rel', 'noopener noreferrer');
             rssFeedLink.setAttribute('target', '_blank');
-            rssFeedLink.innerText = 'RSS';
+            rssFeedLink.textContent = 'RSS';
             document.querySelector('.sidebar__footer-controls-container').appendChild(rssFeedLink);
             rssFeedLinkCreated = true;
         }
@@ -1222,9 +1243,9 @@ async function fetchSites() {
         tileContainerCount = 0;
 
         // We'll remove the existing rows, columns and headers from the list view table.
-        listViewTableBody.innerHTML = '';
-        listViewTableColumns.innerHTML = '';
-        listViewTableHead.innerHTML = '<tr></tr>';
+        listViewTableBody.replaceChildren();
+        listViewTableColumns.replaceChildren();
+        listViewTableHead.replaceChildren(document.createElement('tr'));
         const tableHeadRow = listViewTableHead.querySelector('tr');
 
         // Column 0 (site image).
@@ -1239,7 +1260,9 @@ async function fetchSites() {
         const column1Header = document.createElement('th');
         column1Header.classList = 'list-view-table__header--sortable';
         column1Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(1)');
-        column1Header.innerHTML = '<span>ID</span>';
+        column1Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'ID' })
+        );
         listViewTableColumns.appendChild(column1);
         tableHeadRow.appendChild(column1Header);
 
@@ -1248,7 +1271,9 @@ async function fetchSites() {
         const column2Header = document.createElement('th');
         column2Header.classList = 'list-view-table__header--sortable';
         column2Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(2)');
-        column2Header.innerHTML = '<span>Name</span>';
+        column2Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'Name' })
+        );
         listViewTableColumns.appendChild(column2);
         tableHeadRow.appendChild(column2Header);
 
@@ -1257,7 +1282,9 @@ async function fetchSites() {
         const column3Header = document.createElement('th');
         column3Header.classList = 'list-view-table__header--sortable';
         column3Header.setAttribute('onclick', 'listViewTableHeader_ClickEvent(3)');
-        column3Header.innerHTML = '<span>Tags</span>';
+        column3Header.replaceChildren(
+            Object.assign(document.createElement('span'), { textContent: 'Tags' })
+        );
         listViewTableColumns.appendChild(column3);
         tableHeadRow.appendChild(column3Header);
 
@@ -1267,7 +1294,9 @@ async function fetchSites() {
             const customColumnHeader = document.createElement('th');
             customColumnHeader.classList = 'list-view-table__header--sortable';
             customColumnHeader.setAttribute('onclick', `listViewTableHeader_ClickEvent(${4 + i})`);
-            customColumnHeader.innerHTML = `<span>${listViewCustomColumns[i]}</span>`;
+            customColumnHeader.replaceChildren(
+                Object.assign(document.createElement('span'), { textContent: listViewCustomColumns[i] })
+            );
             listViewTableColumns.appendChild(customColumn);
             tableHeadRow.appendChild(customColumnHeader);
         }
@@ -1276,7 +1305,7 @@ async function fetchSites() {
         const lastColumn = document.createElement('col');
         lastColumn.classList = 'list-view-table__column--min-width';
         const lastColumnHeader = document.createElement('th');
-        lastColumnHeader.innerHTML = '<span></span>';
+        lastColumnHeader.replaceChildren(document.createElement('span'));
         listViewTableColumns.appendChild(lastColumn);
         tableHeadRow.appendChild(lastColumnHeader);
 
@@ -1287,7 +1316,9 @@ async function fetchSites() {
 
             // We'll create a new tile group.
             const newTileGroup = document.importNode(tileGroupTemplate.content, true);
-            newTileGroup.querySelector('.dashboard-view__group-title-text').innerHTML = `<span>${sitesJson[i].GroupName}</span>`;
+            newTileGroup.querySelector('.dashboard-view__group-title-text').replaceChildren(
+                Object.assign(document.createElement('span'), { textContent: sitesJson[i].GroupName })
+            );
 
             if (Array.isArray(sitesJson[i].Sites) && sitesJson[i].Sites.length > 0) {
 
@@ -1304,7 +1335,9 @@ async function fetchSites() {
                     // We'll create a new tile subgroup.
                     const currentSubgroup = sitesJson[i].Subgroups[j];
                     const newTileSubgroup = document.importNode(tileSubgroupTemplate.content, true);
-                    newTileSubgroup.querySelector('.dashboard-view__subgroup-title-text').innerHTML = `<span>${currentSubgroup.SubgroupName}</span>`;
+                    newTileSubgroup.querySelector('.dashboard-view__subgroup-title-text').replaceChildren(
+                        Object.assign(document.createElement('span'), { textContent: currentSubgroup.SubgroupName })
+                    );
 
                     // We'll add each site to the tile subgroup in dashboard view and in to the table in list view.
                     newTileSubgroup.querySelector('.dashboard-view__subgroup-container').appendChild(createTileContainer(currentSubgroup.Sites));
@@ -1358,7 +1391,7 @@ async function fetchStatistics() {
 
         // We'll hide the statistics container if there's no statistics that need to be displayed.
         if (statisticsJson.length === 0) {
-            dashboardViewGroupContainerStatistics.innerHTML = '';
+            dashboardViewGroupContainerStatistics.replaceChildren();
             return;
         }
 
@@ -1385,21 +1418,23 @@ async function fetchStatistics() {
 
             // We'll set the statistic tile's image path.
             if (typeof statisticsJson[i].ImagePath === 'string' && statisticsJson[i].ImagePath.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__image-wrapper').innerHTML = `<img src='${statisticsJson[i].ImagePath}' alt='?'></img>`;
+                newStatisticTile.querySelector('.statistic-tile__image-wrapper').replaceChildren(
+                    Object.assign(document.createElement('img'), { src: statisticsJson[i].ImagePath, alt: '?'} )
+                );
             } else {
                 newStatisticTile.querySelector('.statistic-tile__image-wrapper').remove();
             }
 
             // We'll set the statistic tile's title.
             if (typeof statisticsJson[i].Title === 'string' && statisticsJson[i].Title.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__title-text').innerText = statisticsJson[i].Title;
+                newStatisticTile.querySelector('.statistic-tile__title-text').textContent = statisticsJson[i].Title;
             } else {
                 newStatisticTile.querySelector('.statistic-tile__title-text').remove();
             }
 
             // We'll set the statistic tile's value.
             if (typeof statisticsJson[i].Value === 'string' && statisticsJson[i].Value.length > 0) {
-                newStatisticTile.querySelector('.statistic-tile__value-text').innerText = statisticsJson[i].Value;
+                newStatisticTile.querySelector('.statistic-tile__value-text').textContent = statisticsJson[i].Value;
             } else {
                 newStatisticTile.querySelector('.statistic-tile__value-text').remove();
             }
@@ -1423,7 +1458,7 @@ async function fetchStatistics() {
             statisticTileContainer.appendChild(subcontainers[i]);
         }
 
-        dashboardViewGroupContainerStatistics.innerHTML = '';
+        dashboardViewGroupContainerStatistics.replaceChildren();
         dashboardViewGroupContainerStatistics.appendChild(statisticTileContainer);
 
     });
@@ -1890,7 +1925,7 @@ function listViewTableRow_ClickEvent(element, event) {
         showDetailsDialog(
             element.getAttribute('data-siteid'),
             element.getAttribute('data-sitename'),
-            element.getAttribute('data-siteimage'),
+            element.getAttribute('data-siteimageid'),
             element.getAttribute('data-sitedetails')
         );
     }
@@ -2194,7 +2229,7 @@ function tileShowDetailsButton_ClickEvent(element) {
     showDetailsDialog(
         element.getAttribute('data-siteid'),
         element.getAttribute('data-sitename'),
-        element.getAttribute('data-siteimage'),
+        element.getAttribute('data-siteimageid'),
         element.getAttribute('data-sitedetails')
     );
 }
@@ -2232,7 +2267,7 @@ function createHyperlink(hyperlinkConfiguration, imageOnlyHyperlink = false) {
             newHyperlink.setAttribute('data-tooltip', hyperlinkConfiguration.Title);
         } else {
             const newHyperlinkSpan = document.createElement('span');
-            newHyperlinkSpan.innerText = hyperlinkConfiguration.Title;
+            newHyperlinkSpan.textContent = hyperlinkConfiguration.Title;
             newHyperlink.appendChild(newHyperlinkSpan);
         }
     }
@@ -2267,6 +2302,9 @@ function createSiteRow(siteConfiguration) {
     newSiteImageWrapper.classList = 'list-view-table__cell-image-container';
 
     const newSiteImage = document.createElement('img');
+    newSiteImage.setAttribute('id', `siteImage${siteImageCount.toString()}`);
+    siteImageCount++;
+
     if (typeof siteConfiguration.ImagePath === 'string' && siteConfiguration.ImagePath.length > 0) {
         newSiteImage.classList.add(...createImageClassList(siteConfiguration));
         newSiteImage.setAttribute('src', siteConfiguration.ImagePath);
@@ -2274,6 +2312,7 @@ function createSiteRow(siteConfiguration) {
         newSiteImage.classList.add('image--allow-brightness-control');
         newSiteImage.setAttribute('src', 'images/data-centre.svg');
     }
+
     newSiteImage.setAttribute('alt', '?');
 
     newSiteImageWrapper.appendChild(newSiteImage);
@@ -2283,13 +2322,13 @@ function createSiteRow(siteConfiguration) {
     // Column 1 (site ID).
     const column1Cell = document.createElement('td');
     column1Cell.classList = 'list-view-table__cell--bold-text';
-    column1Cell.innerText = siteConfiguration.ID;
+    column1Cell.textContent = siteConfiguration.ID;
     newSiteRow.appendChild(column1Cell);
     newSiteRow.setAttribute('data-sorttextcol1', siteConfiguration.ID);
 
     // Column 2 (site name).
     const column2Cell = document.createElement('td');
-    column2Cell.innerText = siteConfiguration.Name;
+    column2Cell.textContent = siteConfiguration.Name;
     newSiteRow.appendChild(column2Cell);
     newSiteRow.setAttribute('data-sorttextcol2', siteConfiguration.Name);
 
@@ -2331,7 +2370,7 @@ function createSiteRow(siteConfiguration) {
 
     } else {
         column3Cell.classList = 'list-view-table__cell--small-text';
-        column3Cell.innerText = '-';
+        column3Cell.textContent = '-';
     }
 
     newSiteRow.appendChild(column3Cell);
@@ -2346,9 +2385,9 @@ function createSiteRow(siteConfiguration) {
 
         if (customColumnsSpecified && typeof siteConfiguration.ListViewCustomColumns[i] === 'string' && siteConfiguration.ListViewCustomColumns[i].length > 0) {
             newSiteRow.setAttribute(`data-sorttextcol${4 + i}`, siteConfiguration.ListViewCustomColumns[i]);
-            customColumnCell.innerText = siteConfiguration.ListViewCustomColumns[i];
+            customColumnCell.textContent = siteConfiguration.ListViewCustomColumns[i];
         } else {
-            customColumnCell.innerText = '-';
+            customColumnCell.textContent = '-';
         }
 
         newSiteRow.appendChild(customColumnCell);
@@ -2388,7 +2427,7 @@ function createSiteRow(siteConfiguration) {
         newSiteRow.setAttribute('onclick', 'listViewTableRow_ClickEvent(this, event)');
         newSiteRow.setAttribute('data-siteid', siteConfiguration.ID);
         newSiteRow.setAttribute('data-sitename', siteConfiguration.Name);
-        newSiteRow.setAttribute('data-siteimage', newSiteImage.outerHTML);
+        newSiteRow.setAttribute('data-siteimageid', newSiteImage.getAttribute('id'));
         newSiteRow.setAttribute('data-sitedetails', JSON.stringify(siteConfiguration.AdditionalDetails));
     }
 
@@ -2409,7 +2448,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
     // <div class='tile__header-container'>
 
-    newSiteTile.querySelector('.tile__id-text').innerText = siteConfiguration.ID;
+    newSiteTile.querySelector('.tile__id-text').textContent = siteConfiguration.ID;
 
     if (Array.isArray(siteConfiguration.Tags) && siteConfiguration.Tags.length > 0) {
 
@@ -2442,9 +2481,9 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
     // <div class='tile__body-container'>
 
-    newSiteTile.querySelector('.tile__title-text').innerText = siteConfiguration.Name;
+    newSiteTile.querySelector('.tile__title-text').textContent = siteConfiguration.Name;
     if (typeof siteConfiguration.Description === 'string' && siteConfiguration.Description.length > 0) {
-        newSiteTile.querySelector('.tile__subtitle-text').innerText = siteConfiguration.Description;
+        newSiteTile.querySelector('.tile__subtitle-text').textContent = siteConfiguration.Description;
         tileElement.setAttribute('data-sitedescription', siteConfiguration.Description);
     } else {
         newSiteTile.querySelector('.tile__subtitle-text').remove();
@@ -2475,14 +2514,16 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
             // We'll add either an image or a title for the status item (if one is specified).
             if (typeof statusConfigurationItem.ImagePath === 'string' && statusConfigurationItem.ImagePath.length > 0) {
-                const newStatusItemImage = document.createElement('div');
-                newStatusItemImage.classList = 'tile__status-item-image-wrapper';
-                newStatusItemImage.innerHTML = `<img src='${statusConfigurationItem.ImagePath}' alt='?'>`;
-                newStatusItem.appendChild(newStatusItemImage);
+                const newStatusItemImageWrapper = document.createElement('div');
+                newStatusItemImageWrapper.classList = 'tile__status-item-image-wrapper';
+                newStatusItemImageWrapper.appendChild(
+                    Object.assign(document.createElement('img'), { 'src': statusConfigurationItem.ImagePath, 'alt': '?' } )
+                );
+                newStatusItem.appendChild(newStatusItemImageWrapper);
             } else if (typeof statusConfigurationItem.TitleText === 'string' && statusConfigurationItem.TitleText.length > 0) {
                 const newStatusItemTitle = document.createElement('div');
                 newStatusItemTitle.classList = 'tile__status-item-title-text';
-                newStatusItemTitle.innerHTML = statusConfigurationItem.TitleText;
+                newStatusItemTitle.textContent = statusConfigurationItem.TitleText;
                 newStatusItem.appendChild(newStatusItemTitle);
             }
 
@@ -2499,7 +2540,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
                 // If a URL is specified for the status item, we'll make the value text a hyperlink.
                 if (typeof statusConfigurationItem.Url === 'string' && statusConfigurationItem.Url.length > 0) {
                     const newStatusItemHyperlink = document.createElement('a');
-                    newStatusItemHyperlink.innerHTML = statusConfigurationItem.ValueText;
+                    newStatusItemHyperlink.textContent = statusConfigurationItem.ValueText;
                     newStatusItemHyperlink.setAttribute('href', statusConfigurationItem.Url);
                     if (typeof statusConfigurationItem.OpenUrlInNewTab === 'undefined' || statusConfigurationItem.OpenUrlInNewTab !== false) {
                         newStatusItemHyperlink.setAttribute('rel', 'noopener noreferrer');
@@ -2507,7 +2548,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
                     }
                     newStatusItemText.appendChild(newStatusItemHyperlink);
                 } else {
-                    newStatusItemText.innerHTML = statusConfigurationItem.ValueText;
+                    newStatusItemText.textContent = statusConfigurationItem.ValueText;
                 }
 
                 newStatusItem.appendChild(newStatusItemText);
@@ -2525,6 +2566,8 @@ function createSiteTile(siteConfiguration, tileContainerID) {
     // <div class='tile__image-container'>
 
     const newSiteImage = document.createElement('img');
+    newSiteImage.setAttribute('id', `siteImage${siteImageCount.toString()}`);
+    siteImageCount++;
 
     if (typeof siteConfiguration.ImagePath === 'string' && siteConfiguration.ImagePath.length > 0) {
         newSiteImage.classList.add(...createImageClassList(siteConfiguration));
@@ -2557,9 +2600,9 @@ function createSiteTile(siteConfiguration, tileContainerID) {
         const controlsContainerPlaceholder = document.createElement('div');
         controlsContainerPlaceholder.classList.add('tile__controls-container-placeholder');
         if (typeof siteConfiguration.HyperlinkPlaceholderText === 'string' && siteConfiguration.HyperlinkPlaceholderText.length > 0) {
-            controlsContainerPlaceholder.innerText = siteConfiguration.HyperlinkPlaceholderText;
+            controlsContainerPlaceholder.textContent = siteConfiguration.HyperlinkPlaceholderText;
         } else {
-            controlsContainerPlaceholder.innerText = 'No hyperlinks are available';
+            controlsContainerPlaceholder.textContent = 'No hyperlinks are available';
         }
         controlsContainerElement.appendChild(controlsContainerPlaceholder);
     }
@@ -2586,7 +2629,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
         const newAdditionalDetailsButtonElement = newAdditionalDetailsButton.querySelector('.tile__show-details-button');
         newAdditionalDetailsButtonElement.setAttribute('data-siteid', siteConfiguration.ID);
         newAdditionalDetailsButtonElement.setAttribute('data-sitename', siteConfiguration.Name);
-        newAdditionalDetailsButtonElement.setAttribute('data-siteimage', newSiteImage.outerHTML);
+        newAdditionalDetailsButtonElement.setAttribute('data-siteimageid', newSiteImage.getAttribute('id'));
         newAdditionalDetailsButtonElement.setAttribute('data-sitedetails', JSON.stringify(siteConfiguration.AdditionalDetails));
         controlsContainerElement.appendChild(newAdditionalDetailsButton);
     }
@@ -2637,7 +2680,7 @@ function createTag(tagConfiguration, allowHyperlinks = true, allowTooltips = tru
     if (typeof tagConfiguration.Text === 'string' && tagConfiguration.Text.length > 0) {
 
         const newTagSpan = document.createElement('span');
-        newTagSpan.innerText = tagConfiguration.Text;
+        newTagSpan.textContent = tagConfiguration.Text;
         newTag.appendChild(newTagSpan);
 
         // If no custom style has been applied, we'll check if the text is a keyword which should have a special style applied.

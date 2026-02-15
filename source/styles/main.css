@@ -1608,6 +1608,7 @@ body {
     line-height: 10px;
     text-align: left;
     text-transform: uppercase;
+    white-space: pre-line;
 }
 
 .tile__status-item-text {
@@ -1616,7 +1617,7 @@ body {
     font-size: 18px;
     margin-left: 6px;
     outline-offset: 2px;
-    white-space: nowrap;
+    white-space: pre-line;
 }
 
 .tile__status-item-text--small {
@@ -2607,6 +2608,7 @@ a.tag:focus-visible {
 
 .details-dialog__content-container > details td {
     vertical-align: top;
+    white-space: pre-wrap;
 }
 
 .details-dialog__content-container > details td:first-child {
