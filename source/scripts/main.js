@@ -2452,7 +2452,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
     // <div class='tile__header-container'>
 
-    newSiteTile.querySelector('.tile__id-text').innerText = siteConfiguration.ID;
+    newSiteTile.querySelector('.tile__id-text').textContent = siteConfiguration.ID;
 
     if (Array.isArray(siteConfiguration.Tags) && siteConfiguration.Tags.length > 0) {
 
@@ -2485,9 +2485,9 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
     // <div class='tile__body-container'>
 
-    newSiteTile.querySelector('.tile__title-text').innerText = siteConfiguration.Name;
+    newSiteTile.querySelector('.tile__title-text').textContent = siteConfiguration.Name;
     if (typeof siteConfiguration.Description === 'string' && siteConfiguration.Description.length > 0) {
-        newSiteTile.querySelector('.tile__subtitle-text').innerText = siteConfiguration.Description;
+        newSiteTile.querySelector('.tile__subtitle-text').textContent = siteConfiguration.Description;
         tileElement.setAttribute('data-sitedescription', siteConfiguration.Description);
     } else {
         newSiteTile.querySelector('.tile__subtitle-text').remove();
@@ -2518,14 +2518,16 @@ function createSiteTile(siteConfiguration, tileContainerID) {
 
             // We'll add either an image or a title for the status item (if one is specified).
             if (typeof statusConfigurationItem.ImagePath === 'string' && statusConfigurationItem.ImagePath.length > 0) {
-                const newStatusItemImage = document.createElement('div');
-                newStatusItemImage.classList = 'tile__status-item-image-wrapper';
-                newStatusItemImage.innerHTML = `<img src='${statusConfigurationItem.ImagePath}' alt='?'>`;
-                newStatusItem.appendChild(newStatusItemImage);
+                const newStatusItemImageWrapper = document.createElement('div');
+                newStatusItemImageWrapper.classList = 'tile__status-item-image-wrapper';
+                newStatusItemImageWrapper.appendChild(
+                    Object.assign(document.createElement('img'), { 'src': statusConfigurationItem.ImagePath, 'alt': '?' } )
+                );
+                newStatusItem.appendChild(newStatusItemImageWrapper);
             } else if (typeof statusConfigurationItem.TitleText === 'string' && statusConfigurationItem.TitleText.length > 0) {
                 const newStatusItemTitle = document.createElement('div');
                 newStatusItemTitle.classList = 'tile__status-item-title-text';
-                newStatusItemTitle.innerHTML = statusConfigurationItem.TitleText;
+                newStatusItemTitle.textContent = statusConfigurationItem.TitleText;
                 newStatusItem.appendChild(newStatusItemTitle);
             }
 
@@ -2542,7 +2544,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
                 // If a URL is specified for the status item, we'll make the value text a hyperlink.
                 if (typeof statusConfigurationItem.Url === 'string' && statusConfigurationItem.Url.length > 0) {
                     const newStatusItemHyperlink = document.createElement('a');
-                    newStatusItemHyperlink.innerHTML = statusConfigurationItem.ValueText;
+                    newStatusItemHyperlink.textContent = statusConfigurationItem.ValueText;
                     newStatusItemHyperlink.setAttribute('href', statusConfigurationItem.Url);
                     if (typeof statusConfigurationItem.OpenUrlInNewTab === 'undefined' || statusConfigurationItem.OpenUrlInNewTab !== false) {
                         newStatusItemHyperlink.setAttribute('rel', 'noopener noreferrer');
@@ -2550,7 +2552,7 @@ function createSiteTile(siteConfiguration, tileContainerID) {
                     }
                     newStatusItemText.appendChild(newStatusItemHyperlink);
                 } else {
-                    newStatusItemText.innerHTML = statusConfigurationItem.ValueText;
+                    newStatusItemText.textContent = statusConfigurationItem.ValueText;
                 }
 
                 newStatusItem.appendChild(newStatusItemText);
@@ -2602,9 +2604,9 @@ function createSiteTile(siteConfiguration, tileContainerID) {
         const controlsContainerPlaceholder = document.createElement('div');
         controlsContainerPlaceholder.classList.add('tile__controls-container-placeholder');
         if (typeof siteConfiguration.HyperlinkPlaceholderText === 'string' && siteConfiguration.HyperlinkPlaceholderText.length > 0) {
-            controlsContainerPlaceholder.innerText = siteConfiguration.HyperlinkPlaceholderText;
+            controlsContainerPlaceholder.textContent = siteConfiguration.HyperlinkPlaceholderText;
         } else {
-            controlsContainerPlaceholder.innerText = 'No hyperlinks are available';
+            controlsContainerPlaceholder.textContent = 'No hyperlinks are available';
         }
         controlsContainerElement.appendChild(controlsContainerPlaceholder);
     }
