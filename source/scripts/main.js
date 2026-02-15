@@ -587,18 +587,14 @@ async function showDetailsDialog(siteID, siteName, siteImageID, siteDetails) {
 
                 // We'll add a table row for each data item in the category.
                 for (let j = 0; j < siteDetailsJson[i].Data.length; j++) {
-
-                    const newKeyCell = document.createElement('td');
-                    newKeyCell.textContent = siteDetailsJson[i].Data[j].Key;
-
-                    const newValueCell = document.createElement('td');
-                    newValueCell.textContent = siteDetailsJson[i].Data[j].Value;
-
                     const newTableRow = document.createElement('tr');
-                    newTableRow.appendChild(newKeyCell);
-                    newTableRow.appendChild(newValueCell);
+                    newTableRow.appendChild(
+                        Object.assign(document.createElement('td'), { textContent: siteDetailsJson[i].Data[j].Key })
+                    );
+                    newTableRow.appendChild(
+                        Object.assign(document.createElement('td'), { textContent: siteDetailsJson[i].Data[j].Value })
+                    );
                     newDetailsDialogDisclosure.querySelector('tbody').appendChild(newTableRow);
-
                 }
 
                 // We'll set the caption text if one is specified (otherwise we'll remove the element).
