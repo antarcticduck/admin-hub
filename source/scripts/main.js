@@ -2326,13 +2326,13 @@ function createSiteRow(siteConfiguration) {
     // Column 1 (site ID).
     const column1Cell = document.createElement('td');
     column1Cell.classList = 'list-view-table__cell--bold-text';
-    column1Cell.innerText = siteConfiguration.ID;
+    column1Cell.textContent = siteConfiguration.ID;
     newSiteRow.appendChild(column1Cell);
     newSiteRow.setAttribute('data-sorttextcol1', siteConfiguration.ID);
 
     // Column 2 (site name).
     const column2Cell = document.createElement('td');
-    column2Cell.innerText = siteConfiguration.Name;
+    column2Cell.textContent = siteConfiguration.Name;
     newSiteRow.appendChild(column2Cell);
     newSiteRow.setAttribute('data-sorttextcol2', siteConfiguration.Name);
 
@@ -2374,7 +2374,7 @@ function createSiteRow(siteConfiguration) {
 
     } else {
         column3Cell.classList = 'list-view-table__cell--small-text';
-        column3Cell.innerText = '-';
+        column3Cell.textContent = '-';
     }
 
     newSiteRow.appendChild(column3Cell);
@@ -2389,9 +2389,9 @@ function createSiteRow(siteConfiguration) {
 
         if (customColumnsSpecified && typeof siteConfiguration.ListViewCustomColumns[i] === 'string' && siteConfiguration.ListViewCustomColumns[i].length > 0) {
             newSiteRow.setAttribute(`data-sorttextcol${4 + i}`, siteConfiguration.ListViewCustomColumns[i]);
-            customColumnCell.innerText = siteConfiguration.ListViewCustomColumns[i];
+            customColumnCell.textContent = siteConfiguration.ListViewCustomColumns[i];
         } else {
-            customColumnCell.innerText = '-';
+            customColumnCell.textContent = '-';
         }
 
         newSiteRow.appendChild(customColumnCell);
