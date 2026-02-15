@@ -492,7 +492,10 @@ function setTileContainerResponsiveUI() {
     for (let i = 0; i < dashboardViewTileContainers.length; i++) {
         const placeholderText = dashboardViewTileContainers[i].querySelector('.dashboard-view__placeholder-text')
         if (dashboardViewTileContainers[i].querySelectorAll('.tile').length === 0) {
-            dashboardViewTileContainers[i].innerHTML = '<div class="dashboard-view__placeholder-text">There are no sites to show</div>';
+            const placeholderTextElement = document.createElement('div');
+            placeholderTextElement.classList = 'dashboard-view__placeholder-text';
+            placeholderTextElement.textContent = 'There are no sites to show';
+            dashboardViewTileContainers[i].replaceChildren(placeholderTextElement);
         } else if (placeholderText !== null) {
             dashboardViewTileContainers[i].removeChild(placeholderText);
         }
