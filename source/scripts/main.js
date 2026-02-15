@@ -985,7 +985,7 @@ function fetchHyperlinks() {
             if (typeof hyperlinksJson[i].Title === 'string' && hyperlinksJson[i].Title.length > 0) {
                 const newHyperlinkGroupTitleText = document.createElement('div');
                 newHyperlinkGroupTitleText.className = 'sidebar__hyperlink-group-title-text';
-                newHyperlinkGroupTitleText.innerText = hyperlinksJson[i].Title;
+                newHyperlinkGroupTitleText.textContent = hyperlinksJson[i].Title;
                 hyperlinkGroupContainer.appendChild(newHyperlinkGroupTitleText);
             }
 
