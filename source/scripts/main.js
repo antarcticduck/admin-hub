@@ -2271,7 +2271,7 @@ function createHyperlink(hyperlinkConfiguration, imageOnlyHyperlink = false) {
             newHyperlink.setAttribute('data-tooltip', hyperlinkConfiguration.Title);
         } else {
             const newHyperlinkSpan = document.createElement('span');
-            newHyperlinkSpan.innerText = hyperlinkConfiguration.Title;
+            newHyperlinkSpan.textContent = hyperlinkConfiguration.Title;
             newHyperlink.appendChild(newHyperlinkSpan);
         }
     }
