@@ -2684,7 +2684,7 @@ function createTag(tagConfiguration, allowHyperlinks = true, allowTooltips = tru
     if (typeof tagConfiguration.Text === 'string' && tagConfiguration.Text.length > 0) {
 
         const newTagSpan = document.createElement('span');
-        newTagSpan.innerText = tagConfiguration.Text;
+        newTagSpan.textContent = tagConfiguration.Text;
         newTag.appendChild(newTagSpan);
 
         // If no custom style has been applied, we'll check if the text is a keyword which should have a special style applied.
