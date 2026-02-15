@@ -320,7 +320,7 @@ function searchList() {
 
         content.classList.remove('content--list-view-search-mode');
         contentSearchCloseButtonContainer.classList.add('content__button-container--hidden');
-        contentSearchCaptionText.innerHTML = '';
+        contentSearchCaptionText.replaceChildren();
 
     } else {
 
@@ -386,7 +386,7 @@ function searchTiles() {
         sidebar.removeAttribute('inert');
         content.classList.remove('content--search-mode');
         contentSearchCloseButtonContainer.classList.add('content__button-container--hidden');
-        contentSearchCaptionText.innerHTML = '';
+        contentSearchCaptionText.replaceChildren();
 
     } else {
 
@@ -879,7 +879,7 @@ function fetchClocks() {
 
         const clockPopupItemTemplate = document.querySelector("#clockPopupItemTemplate");
         const clockPopupItemContainer = document.querySelector('.clock-popup__item-container');
-        clockPopupItemContainer.innerHTML = '';
+        clockPopupItemContainer.replaceChildren();
 
         for (let i = 0; i < clocksJson.length; i++) {
 
@@ -952,7 +952,7 @@ function fetchHyperlinks() {
     .then(hyperlinksJson => {
 
         const hyperlinkGroupContainer = document.querySelector('.sidebar__hyperlink-group-container');
-        hyperlinkGroupContainer.innerHTML = '';
+        hyperlinkGroupContainer.replaceChildren();
 
         for (let i = 0; i < hyperlinksJson.length; i++) {
 
@@ -1052,7 +1052,7 @@ async function fetchLiveData() {
         return;
     }
 
-    dashboardViewTileContainerPinned.innerHTML = '';
+    dashboardViewTileContainerPinned.replaceChildren();
 
     // If any pinned tiles were specified in the local storage we'll pin them (if they exist).
     if (isLocalStorageAccessible && pinnedSites !== null) {
@@ -1117,7 +1117,7 @@ function fetchRssFeed() {
         const rssItems = rss.querySelectorAll('item');
         const rssFeedPopupItemTemplate = document.querySelector("#rssFeedPopupItemTemplate");
         const rssFeedPopupItemContainer = document.querySelector('.rss-feed-popup__item-container');
-        rssFeedPopupItemContainer.innerHTML = '';
+        rssFeedPopupItemContainer.replaceChildren();
 
         // We'll set the default item link to be either the channel link (if specified) or the URL to the RSS feed.
         const rssLink = rss.querySelector('channel > link')?.innerHTML;
@@ -1222,8 +1222,8 @@ async function fetchSites() {
         tileContainerCount = 0;
 
         // We'll remove the existing rows, columns and headers from the list view table.
-        listViewTableBody.innerHTML = '';
-        listViewTableColumns.innerHTML = '';
+        listViewTableBody.replaceChildren();
+        listViewTableColumns.replaceChildren();
         listViewTableHead.innerHTML = '<tr></tr>';
         const tableHeadRow = listViewTableHead.querySelector('tr');
 
@@ -1358,7 +1358,7 @@ async function fetchStatistics() {
 
         // We'll hide the statistics container if there's no statistics that need to be displayed.
         if (statisticsJson.length === 0) {
-            dashboardViewGroupContainerStatistics.innerHTML = '';
+            dashboardViewGroupContainerStatistics.replaceChildren();
             return;
         }
 
@@ -1423,7 +1423,7 @@ async function fetchStatistics() {
             statisticTileContainer.appendChild(subcontainers[i]);
         }
 
-        dashboardViewGroupContainerStatistics.innerHTML = '';
+        dashboardViewGroupContainerStatistics.replaceChildren();
         dashboardViewGroupContainerStatistics.appendChild(statisticTileContainer);
 
     });
